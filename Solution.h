@@ -4,24 +4,24 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <string>
+
 #ifndef GA_FOLDING_SOLUTION_H
 #define GA_FOLDING_SOLUTION_H
 
-enum direction {LEFT, UP, RIGHT, DOWN};
-enum polarityStatus {HYDROPHILIC, HYDROPHOBIC, NONE};
+enum direction {
+    LEFT, UP, RIGHT, DOWN
+};
+enum polarityStatus {
+    HYDROPHILIC, HYDROPHOBIC, NONE
+};
 
-class Solution{
+class Solution {
 public:
-    Solution() {
-        //populate with random directions
-        srand(time(0));
-        for(int i = 0; i < chainLength; i++)
-        {
-            directions.push_back(static_cast<direction>(rand() % 4));
-            polarity.push_back(static_cast<polarityStatus>(rand() % 2));
-        }
-    };
-    int chainLength = 32;
+    explicit Solution(int inLength);
+    explicit Solution(std::string inputString);
+
+    int chainLength;
     std::vector<direction> directions;
     std::vector<polarityStatus> polarity;
 private:
