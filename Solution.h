@@ -19,6 +19,7 @@ enum polarityStatus {
 class Solution {
 public:
     explicit Solution(int inLength);
+
     explicit Solution(std::string inputString);
 
     int chainLength;
