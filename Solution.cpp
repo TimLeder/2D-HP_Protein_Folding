@@ -6,7 +6,6 @@
 Solution::Solution(int inLength) {
     //populate with random directions
     chainLength = inLength;
-    srand(time(0));
     for (int i = 0; i < chainLength; i++) {
         directions.push_back(static_cast<direction>(rand() % 4));
         polarity.push_back(static_cast<polarityStatus>(rand() % 2));
@@ -16,7 +15,6 @@ Solution::Solution(int inLength) {
 Solution::Solution(std::string inputString) {
     //populate with parameter string
     chainLength = inputString.length();
-    srand(time(0));
     for (int i = 0; i < chainLength; i++) {
         directions.push_back(static_cast<direction>(rand() % 4));
         switch (inputString[i]) {
@@ -67,7 +65,7 @@ float Solution::computeFitness() {
         grid[currentX][currentY] = polarity[i];
     }
 
-    cout << "\n";
+    /*cout << "\n";
     for (int i = 0; i < grid.size(); i++) {
         for (int k = 0; k < grid.size(); k++) {
             switch (grid[i][k]) {
@@ -86,7 +84,7 @@ float Solution::computeFitness() {
             }
         }
         cout << "\n";
-    }
+    }*/
 
     int countHydrophilic = 0;
     int countHydrophobic = 0;
@@ -105,8 +103,8 @@ float Solution::computeFitness() {
         }
     }
     int totalAcids = countHydrophilic + countHydrophobic;
-    int overlaps = chainLength - totalAcids;
-    int contacts = 0;
+    float overlaps = chainLength - totalAcids;
+    float contacts = 0;
 
     for (int i = 0; i < grid.size() - 1; i++) {
         for (int k = 0; k < grid.size() - 1; k++) {
@@ -120,9 +118,10 @@ float Solution::computeFitness() {
             }
         }
     }
-    int weightedOverlaps = overlaps / 5;
-    float output = contacts - weightedOverlaps;
+    float weightedOverlaps = overlaps + 1;
+    float output = contacts / weightedOverlaps;
     if (output < 0)
         output = 0;
-    cout << "FITNESS: " << output << endl;
+    //cout << "FITNESS: " << output << endl;
+    return output;
 }

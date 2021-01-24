@@ -1,17 +1,20 @@
 #include "Solution.h"
 #include "Population.h"
 
-const int MAXGENERATIONS = 100;
+const int MAXGENERATIONS = 5;
 
 //float computeFitness(gridType grid, int chainLength);
 
 
 int main() {
-    int generation = 0;
-    //Solution test = Solution("11010101011110100010001000010001000101111010101011");
-    //test.computeFitness();
-    Population testPop = Population(5);
-
+    srand(time(0));
+    Population p = Population(10);
+    p.computePopFitness();
+    for(int i = 0; i < MAXGENERATIONS; i++) {
+        cout << endl << "GENERATION " << i << endl;
+        p = p.select();
+        p.computePopFitness();
+    }
     /*
     gridType grid{};
     int currentX = grid.size() / 2;

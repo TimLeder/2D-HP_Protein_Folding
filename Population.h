@@ -11,10 +11,12 @@
 class Population {
 public:
     explicit Population(int);
-    //float computePopFitness(gridType grid, int chainLength);
+    float computePopFitness();
+    Population select();
 
     std::vector<Solution> populationVector;
     int populationSize;
+    float populationFitness;
 private:
 };
 

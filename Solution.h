@@ -22,6 +22,9 @@ enum polarityStatus {
     HYDROPHILIC, HYDROPHOBIC, NONE
 };
 
+//random_device rdGenerator;
+//default_random_engine rdEngine(rdGenerator());
+
 class Solution {
 public:
     explicit Solution(int inLength);
