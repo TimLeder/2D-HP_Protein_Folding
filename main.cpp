@@ -1,25 +1,19 @@
-#include <iostream>
 #include "Solution.h"
 #include "Population.h"
-#include <array>
-#include <iomanip>
-
-#define gridType array<array<polarityStatus, 28>, 28>
 
 const int MAXGENERATIONS = 100;
 
-using namespace std;
+//float computeFitness(gridType grid, int chainLength);
 
-float computeFitness(gridType grid, int chainLength);
-
-stringstream printGrid(gridType grid);
 
 int main() {
     int generation = 0;
-    gridType grid{};
-    //Solution test = Solution(32);
-    Solution test = Solution("11010101011110100010001000010001000101111010101011");
+    //Solution test = Solution("11010101011110100010001000010001000101111010101011");
+    //test.computeFitness();
+    Population testPop = Population(5);
 
+    /*
+    gridType grid{};
     int currentX = grid.size() / 2;
     int currentY = grid.size() / 2;
 
@@ -51,32 +45,29 @@ int main() {
         grid[currentX][currentY] = test.polarity[i];
     }
 
-    cout << printGrid(grid).str() << endl;
-    cout << computeFitness(grid, test.chainLength) << setprecision(4) << endl;
-
-}
-
-stringstream printGrid(gridType inGrid) {
-    stringstream outstream;
-    for (int i = 0; i < inGrid.size(); i++) {
-        for (int k = 0; k < inGrid.size(); k++) {
-            switch (inGrid[i][k]) {
+    cout << "\n";
+    for (int i = 0; i < grid.size(); i++) {
+        for (int k = 0; k < grid.size(); k++) {
+            switch (grid[i][k]) {
                 case HYDROPHILIC: {
-                    outstream << "[+] ";
+                    cout << "[+] ";
                     break;
                 }
                 case HYDROPHOBIC: {
-                    outstream << "[-] ";
+                    cout << "[-] ";
                     break;
                 }
                 case NONE: {
-                    outstream << "[ ] ";
+                    cout << "[ ] ";
                     break;
                 }
             }
         }
+        cout << "\n";
     }
-    return outstream;
+
+    cout << computeFitness(grid, test.chainLength) << setprecision(4) << endl;
+
 }
 
 float computeFitness(gridType grid, int chainLength) {
@@ -116,5 +107,5 @@ float computeFitness(gridType grid, int chainLength) {
     float output = contacts - weightedOverlaps;
     if (output < 0)
         output = 0;
-    return output;
+    return output;*/
 }

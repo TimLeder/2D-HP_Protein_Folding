@@ -5,9 +5,15 @@
 #include <vector>
 #include <ctime>
 #include <string>
+#include <array>
+#include <random>
+#include <iomanip>
 
 #ifndef GA_FOLDING_SOLUTION_H
 #define GA_FOLDING_SOLUTION_H
+#define gridType std::array<std::array<polarityStatus, 28>, 28>
+
+using namespace std;
 
 enum direction {
     LEFT, UP, RIGHT, DOWN
@@ -21,6 +27,8 @@ public:
     explicit Solution(int inLength);
 
     explicit Solution(std::string inputString);
+
+    float computeFitness();
 
     int chainLength;
     std::vector<direction> directions;
