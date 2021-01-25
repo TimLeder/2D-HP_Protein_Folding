@@ -23,7 +23,8 @@ float Population::computePopFitness() {
     populationFitness = totalPopFitness;
     cout << endl << "Total Population Fitness: " << totalPopFitness << endl;
     for(unsigned i = 0; i < populationVector.size(); i++) {
-        cout << "Solution " << i << ": " << populationVector[i].computeFitness() / totalPopFitness << " | " << populationVector[i].computeFitness() << endl;
+        cout << "Solution " << i << ": " << populationVector[i].computeFitness() / totalPopFitness
+        << " | " << populationVector[i].computeFitness() << endl;
     }
 }
 
@@ -45,5 +46,36 @@ Population Population::select() {
     populationVector = newPopulationVector;
 
     }*/
+    vector<float>weightVector;
+    for(unsigned i = 0; i < populationVector.size(); i++) {
+        weightVector.push_back(populationVector[i].computeFitness() / populationFitness);
+    }
+    vector<Solution>copyPopulationVector = populationVector;
+    default_random_engine rdGen;
+    discrete_distribution<int>distribution(weightVector.begin(), weightVector.end());
+    for(unsigned i = 0; i < populationVector.size(); i++) {
+        int rndSelect = distribution(rdGen);
+        populationVector[i] = copyPopulationVector[rndSelect];
+    }
     return *this;
+}
+
+void Population::printBestSolution() {
+    auto printThis = max_element(begin(populationVector), end(populationVector));
+    printThis->printSolution();
+}
+
+void Population::mutatePop(float mutF) {
+    for(unsigned i = 0; i < populationVector.size(); i++) {
+        populationVector[i].mutateSolution(mutF);
+    }
+}
+
+float Population::averageFitness() {
+    return populationFitness / static_cast<float>(populationSize);
+}
+
+Solution Population::bestSolution() {
+    auto best = max_element(begin(populationVector), end(populationVector));
+    return *best;
 }

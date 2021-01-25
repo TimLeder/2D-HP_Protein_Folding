@@ -29,6 +29,63 @@ Solution::Solution(std::string inputString) {
                 exit(EXIT_FAILURE);
         }
     }
+    computeFitness();
+}
+
+void Solution::printSolution() {
+    gridType grid{};
+
+    int currentX = grid.size() / 2;
+    int currentY = grid.size() / 2;
+
+    for (int i = 0; i < grid.size(); i++) {
+        for (int k = 0; k < grid.size(); k++) {
+            grid[i][k] = NONE;
+        }
+    }
+
+    for (int i = 0; i < chainLength; i++) {
+        switch (directions[i]) {
+            case LEFT: {
+                currentX--;
+                break;
+            }
+            case UP: {
+                currentY++;
+                break;
+            }
+            case RIGHT: {
+                currentX++;
+                break;
+            }
+            case DOWN: {
+                currentY--;
+                break;
+            }
+        }
+        grid[currentX][currentY] = polarity[i];
+    }
+
+    cout << "\n";
+    for (int i = 0; i < grid.size(); i++) {
+        for (int k = 0; k < grid.size(); k++) {
+            switch (grid[i][k]) {
+                case HYDROPHILIC: {
+                    cout << "[+] ";
+                    break;
+                }
+                case HYDROPHOBIC: {
+                    cout << "[-] ";
+                    break;
+                }
+                case NONE: {
+                    cout << "[ ] ";
+                    break;
+                }
+            }
+        }
+        cout << "\n";
+    }
 }
 
 float Solution::computeFitness() {
@@ -65,27 +122,6 @@ float Solution::computeFitness() {
         grid[currentX][currentY] = polarity[i];
     }
 
-    /*cout << "\n";
-    for (int i = 0; i < grid.size(); i++) {
-        for (int k = 0; k < grid.size(); k++) {
-            switch (grid[i][k]) {
-                case HYDROPHILIC: {
-                    cout << "[+] ";
-                    break;
-                }
-                case HYDROPHOBIC: {
-                    cout << "[-] ";
-                    break;
-                }
-                case NONE: {
-                    cout << "[ ] ";
-                    break;
-                }
-            }
-        }
-        cout << "\n";
-    }*/
-
     int countHydrophilic = 0;
     int countHydrophobic = 0;
     for (int i = 0; i < grid.size(); i++) {
@@ -103,7 +139,8 @@ float Solution::computeFitness() {
         }
     }
     int totalAcids = countHydrophilic + countHydrophobic;
-    float overlaps = chainLength - totalAcids;
+    auto overlaps = static_cast<float>(chainLength - totalAcids);
+    slOverlaps = static_cast<int>(overlaps);
     float contacts = 0;
 
     for (int i = 0; i < grid.size() - 1; i++) {
@@ -123,5 +160,94 @@ float Solution::computeFitness() {
     if (output < 0)
         output = 0;
     //cout << "FITNESS: " << output << endl;
+    slFitness = output;
     return output;
+}
+
+void Solution::mutateSolution(float mutF) {
+    for (unsigned i = 0; i < directions.size(); i++) {
+        float rndFloat = static_cast<float> (rand()) / static_cast<float>(RAND_MAX);
+        if (rndFloat < mutF) {
+            //mutate gene
+            int rndDirection = rand() % 3;
+            switch (directions[i]) {
+                case LEFT: {
+                    switch (rndDirection) {
+                        case 0: {
+                            directions[i] = RIGHT;
+                            break;
+                        }
+                        case 1: {
+                            directions[i] = UP;
+                            break;
+                        }
+                        case 2: {
+                            directions[i] = DOWN;
+                            break;
+                        }
+                            break;
+                    }
+                }
+                case UP: {
+                    switch (rndDirection) {
+                        case 0: {
+                            directions[i] = RIGHT;
+                            break;
+                        }
+                        case 1: {
+                            directions[i] = UP;
+                            break;
+                        }
+                        case 2: {
+                            directions[i] = DOWN;
+                            break;
+                        }
+                            break;
+                    }
+                }
+                case RIGHT: {
+                    switch (rndDirection) {
+                        case 0: {
+                            directions[i] = LEFT;
+                            break;
+                        }
+                        case 1: {
+                            directions[i] = UP;
+                            break;
+                        }
+                        case 2: {
+                            directions[i] = DOWN;
+                            break;
+                        }
+                            break;
+                    }
+                }
+                case DOWN: {
+                    switch (rndDirection) {
+                        case 0: {
+                            directions[i] = RIGHT;
+                            break;
+                        }
+                        case 1: {
+                            directions[i] = UP;
+                            break;
+                        }
+                        case 2: {
+                            directions[i] = LEFT;
+                            break;
+                        }
+                            break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+Solution::Solution() {
+
+}
+
+int Solution::getOverlap() {
+    return slOverlaps;
 }

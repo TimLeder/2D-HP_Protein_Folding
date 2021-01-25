@@ -1,20 +1,44 @@
 #include "Solution.h"
 #include "Population.h"
 
-const int MAXGENERATIONS = 5;
+const int MAXGENERATIONS = 100;
+const float MUTATION_FACTOR = 0.01;
+const int POPULATION_SIZE = 100;
 
 //float computeFitness(gridType grid, int chainLength);
 
 
 int main() {
     srand(time(0));
-    Population p = Population(10);
+    ofstream csv;
+    csv.open("./output.csv");
+    if(csv.fail()) {
+        cout << "FAILURE to open output file\n";
+        return 0;
+    }
+    Solution bestCandidate;
+    Population p = Population(POPULATION_SIZE);
     p.computePopFitness();
     for(int i = 0; i < MAXGENERATIONS; i++) {
         cout << endl << "GENERATION " << i << endl;
+        //CSV: Generationsnummer
+        csv << i << ";";
+        //CSV: Durchschnittliche Fitness
+        csv << p.averageFitness() << ";";
+        //CSV: Fitness des besten Lösungskandidaten dieser Generation
+        csv << p.bestSolution().computeFitness() << ";";
+        //CSV: Fitness des besten bisher gefundenen Lösungskandidaten
+        if(p.bestSolution().computeFitness() > bestCandidate.computeFitness())
+            bestCandidate = p.bestSolution();
+        csv << bestCandidate.computeFitness() << ";";
+        //CSV: Überlappungen des besten bisher gefundenen Lösungskandidaten
+        csv << bestCandidate.getOverlap() << "\n";
         p = p.select();
         p.computePopFitness();
+        p.printBestSolution();
+        p.mutatePop(MUTATION_FACTOR);
     }
+    csv.close();
     /*
     gridType grid{};
     int currentX = grid.size() / 2;

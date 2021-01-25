@@ -11,8 +11,13 @@
 class Population {
 public:
     explicit Population(int);
+
     float computePopFitness();
     Population select();
+    void printBestSolution();
+    float averageFitness();
+    Solution bestSolution();
+    void mutatePop(float mutF);
 
     std::vector<Solution> populationVector;
     int populationSize;
