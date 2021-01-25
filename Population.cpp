@@ -28,7 +28,7 @@ float Population::computePopFitness() {
     }
 }
 
-Population Population::select() {
+Population Population::fpSelect() {
     /*std::vector<Solution> populationCopy = populationVector;
     std::vector<Solution> newPopulationVector = populationVector;
     auto rand_num = static_cast<float>(rand() / static_cast <float> (RAND_MAX/populationFitness));
@@ -41,7 +41,7 @@ Population Population::select() {
             }
             rand_num = rand_num - populationVector[i].computeFitness();
         }
-        newPopulationVector[j] = populationVector[select];
+        newPopulationVector[j] = populationVector[fpSelect];
     }
     populationVector = newPopulationVector;
 
@@ -78,4 +78,19 @@ float Population::averageFitness() {
 Solution Population::bestSolution() {
     auto best = max_element(begin(populationVector), end(populationVector));
     return *best;
+}
+
+void Population::crossoverPop(float crossF) {
+    float rndFloat = static_cast<float> (rand()) / static_cast<float>(RAND_MAX);
+    if (rndFloat < crossF) {
+        int crossCandidate1 = rand() % populationVector.size();
+        int crossCandidate2 = rand() % populationVector.size();
+        int crossIndex = rand() % populationVector[crossCandidate1].directions.size();
+
+        populationVector[crossCandidate1].cross(populationVector[crossCandidate2], crossIndex);
+    }
+}
+
+Population Population::tournamentSelect() {
+    return Population(0);
 }

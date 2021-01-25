@@ -13,11 +13,13 @@ public:
     explicit Population(int);
 
     float computePopFitness();
-    Population select();
+    Population fpSelect();
+    Population tournamentSelect();
     void printBestSolution();
     float averageFitness();
     Solution bestSolution();
     void mutatePop(float mutF);
+    void crossoverPop(float crossF);
 
     std::vector<Solution> populationVector;
     int populationSize;

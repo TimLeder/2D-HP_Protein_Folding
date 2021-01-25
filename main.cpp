@@ -3,6 +3,7 @@
 
 const int MAXGENERATIONS = 100;
 const float MUTATION_FACTOR = 0.01;
+const float CROSSOVER_RATE = 0.1;
 const int POPULATION_SIZE = 100;
 
 //float computeFitness(gridType grid, int chainLength);
@@ -33,9 +34,14 @@ int main() {
         csv << bestCandidate.computeFitness() << ";";
         //CSV: Überlappungen des besten bisher gefundenen Lösungskandidaten
         csv << bestCandidate.getOverlap() << "\n";
-        p = p.select();
+        //Selektieren
+        p = p.fpSelect();
+        //p = p.tournamentSelect();
         p.computePopFitness();
         p.printBestSolution();
+        //Crossover
+        p.crossoverPop(CROSSOVER_RATE);
+        //Mutieren
         p.mutatePop(MUTATION_FACTOR);
     }
     csv.close();

@@ -251,3 +251,19 @@ Solution::Solution() {
 int Solution::getOverlap() {
     return slOverlaps;
 }
+
+void Solution::cross(Solution crossCandidate2, int crossIndex) {
+    vector<direction>crossCandidate1Split(directions.begin(), directions.begin() + crossIndex);
+    vector<direction>inVector = crossCandidate2.split(crossCandidate1Split, crossIndex);
+    for(int i = 0; i < inVector.size(); i++) {
+        directions[i] = inVector[i];
+    }
+}
+
+vector<direction> Solution::split(vector<direction> inVector, int crossIndex) {
+    vector<direction>outVector(directions.begin(), directions.begin() + crossIndex);
+    for(int i = 0; i < inVector.size(); i++) {
+        directions[i] = inVector[i];
+    }
+    return outVector;
+}

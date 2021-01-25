@@ -9,7 +9,7 @@
 #include <random>
 #include <algorithm>
 #include <iomanip>
-#include <windows.h>
+#include <iterator>
 #include <fstream>
 
 #ifndef GA_FOLDING_SOLUTION_H
@@ -35,6 +35,8 @@ public:
     void printSolution();
     int getOverlap();
     void mutateSolution(float mutF);
+    void cross(Solution, int);
+    vector<direction> split(vector<direction>, int);
 
     bool operator> (const Solution &s1) const {
         return this->slFitness > s1.slFitness;
