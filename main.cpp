@@ -1,19 +1,53 @@
-#include <iostream>
 #include "Solution.h"
-#include <array>
-#include <iomanip>
+#include "Population.h"
 
-#define gridType array<array<polarityStatus, 28>, 28>
+const int MAXGENERATIONS = 100;
+const float MUTATION_FACTOR = 0.01;
+const float CROSSOVER_RATE = 0.1;
+const int POPULATION_SIZE = 100;
+const string INPUT_STRING = "11010101011110100010001000010001000101111010101011";
 
-using namespace std;
+//float computeFitness(gridType grid, int chainLength);
 
-float computeFitness(gridType grid, int chainLength);
 
 int main() {
-    gridType grid;
-    //Solution test = Solution(32);
-    Solution test = Solution("11010101011110100010001000010001000101111010101011");
-
+    srand(time(0));
+    ofstream csv;
+    csv.open("./output.csv");
+    if(csv.fail()) {
+        cout << "FAILURE to open output file\n";
+        return 0;
+    }
+    Solution bestCandidate;
+    Population p = Population(POPULATION_SIZE, INPUT_STRING);
+    p.computePopFitness();
+    for(int i = 0; i < MAXGENERATIONS; i++) {
+        //CSV: Generationsnummer
+        csv << i << ";";
+        //CSV: Durchschnittliche Fitness
+        csv << p.averageFitness() << ";";
+        //CSV: Fitness des besten Lösungskandidaten dieser Generation
+        csv << p.bestSolution().computeFitness() << ";";
+        //CSV: Fitness des besten bisher gefundenen Lösungskandidaten
+        if(p.bestSolution().computeFitness() > bestCandidate.computeFitness())
+            bestCandidate = p.bestSolution();
+        csv << bestCandidate.computeFitness() << ";";
+        //CSV: Überlappungen des besten bisher gefundenen Lösungskandidaten
+        csv << bestCandidate.getOverlap() << "\n";
+        //Selektieren
+        p = p.fpSelect();
+        //p = p.tournamentSelectF(0.75);
+        p.computePopFitness();
+        //p.printBestSolution();
+        p.drawBestSolution(i);
+        //Crossover
+        p.crossoverPop(CROSSOVER_RATE);
+        //Mutieren
+        p.mutatePop(MUTATION_FACTOR);
+    }
+    csv.close();
+    /*
+    gridType grid{};
     int currentX = grid.size() / 2;
     int currentY = grid.size() / 2;
 
@@ -107,5 +141,5 @@ float computeFitness(gridType grid, int chainLength) {
     float output = contacts - weightedOverlaps;
     if (output < 0)
         output = 0;
-    return output;
+    return output;*/
 }
