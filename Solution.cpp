@@ -19,10 +19,10 @@ Solution::Solution(std::string inputString) {
         directions.push_back(static_cast<direction>(rand() % 4));
         switch (inputString[i]) {
             case '0':
-                polarity.push_back(HYDROPHILIC);
+                polarity.push_back(HYDROPHOBIC);
                 break;
             case '1':
-                polarity.push_back(HYDROPHOBIC);
+                polarity.push_back(HYDROPHILIC);
                 break;
             default:
                 std::cout << "Invalid character in input string\n";
@@ -34,6 +34,7 @@ Solution::Solution(std::string inputString) {
 
 void Solution::printSolution() {
     gridType grid{};
+    indexGridType indexGrid{};
 
     int currentX = grid.size() / 2;
     int currentY = grid.size() / 2;
@@ -41,6 +42,7 @@ void Solution::printSolution() {
     for (int i = 0; i < grid.size(); i++) {
         for (int k = 0; k < grid.size(); k++) {
             grid[i][k] = NONE;
+            indexGrid[i][k] = NONE;
         }
     }
 
@@ -63,7 +65,14 @@ void Solution::printSolution() {
                 break;
             }
         }
+        currentX = currentX % grid.size();
+        if(currentX < 0)
+            currentX = grid.size() - 1;
+        currentY = currentY % grid.size();
+        if(currentY < 0)
+            currentY = grid.size() - 1;
         grid[currentX][currentY] = polarity[i];
+        indexGrid[currentX][currentY] = i;
     }
 
     cout << "\n";
@@ -71,11 +80,11 @@ void Solution::printSolution() {
         for (int k = 0; k < grid.size(); k++) {
             switch (grid[i][k]) {
                 case HYDROPHILIC: {
-                    cout << "[+] ";
+                    cout << "[" << indexGrid[i][k] << "]";
                     break;
                 }
                 case HYDROPHOBIC: {
-                    cout << "[-] ";
+                    cout << "[" << indexGrid[i][k] << "]";
                     break;
                 }
                 case NONE: {
@@ -119,6 +128,12 @@ float Solution::computeFitness() {
                 break;
             }
         }
+        currentX = currentX % grid.size();
+        if(currentX < 0)
+            currentX = grid.size() - 1;
+        currentY = currentY % grid.size();
+        if(currentY < 0)
+            currentY = grid.size() - 1;
         grid[currentX][currentY] = polarity[i];
     }
 
@@ -266,4 +281,87 @@ vector<direction> Solution::split(vector<direction> inVector, int crossIndex) {
         directions[i] = inVector[i];
     }
     return outVector;
+}
+
+void Solution::renderSolution(int inInt) {
+    bitmap_image image(320,320);
+    int color_index = 0;
+    // set background
+    image.set_all_channels(255, 255, 255);
+
+    image_drawer draw(image);
+
+    draw.pen_width(10);
+    draw.pen_color(0, 0,0);
+
+    gridType grid{};
+    indexGridType indexGrid{};
+
+    int currentX = grid.size() / 2;
+    int currentY = grid.size() / 2;
+
+    for (int i = 0; i < grid.size(); i++) {
+        for (int k = 0; k < grid.size(); k++) {
+            grid[i][k] = NONE;
+            indexGrid[i][k] = NONE;
+        }
+    }
+
+    for (int i = 0; i < chainLength; i++) {
+        switch (directions[i]) {
+            case LEFT: {
+                currentX--;
+                break;
+            }
+            case UP: {
+                currentY++;
+                break;
+            }
+            case RIGHT: {
+                currentX++;
+                break;
+            }
+            case DOWN: {
+                currentY--;
+                break;
+            }
+        }
+        currentX = currentX % grid.size();
+        if(currentX < 0)
+            currentX = grid.size() - 1;
+        currentY = currentY % grid.size();
+        if(currentY < 0)
+            currentY = grid.size() - 1;
+        grid[currentX][currentY] = polarity[i];
+        indexGrid[currentX][currentY] = i;
+    }
+
+    for (int i = 0; i < grid.size(); i++) {
+        for (int k = 0; k < grid.size(); k++) {
+            switch (grid[i][k]) {
+                case HYDROPHILIC: {
+                    color_index = indexGrid[i][k] * 3;
+                    draw.pen_color(color_index, color_index, color_index);
+                    draw.rectangle(i * 10, k * 10, (i * 10) + 10, (k * 10) + 10);
+
+                    draw.pen_color(255, 0, 0);
+                    draw.rectangle(i * 10 + 2, k * 10 + 5, (i * 10) + 10 - 2, (k * 10) + 5);
+                    draw.rectangle(i * 10 + 5, k * 10 + 2, (i * 10) + 10 - 5, (k * 10) + 8);
+                    break;
+                }
+                case HYDROPHOBIC: {
+                    color_index = indexGrid[i][k] * 3;
+                    draw.pen_color(color_index, color_index, color_index);
+                    draw.rectangle(i * 10, k * 10, (i * 10) + 10, (k * 10) + 10);
+
+                    draw.pen_color(0, 0, 255);
+                    draw.rectangle(i * 10 + 2, k * 10 + 5, (i * 10) + 10 - 2, (k * 10) + 5);
+                    break;
+                }
+            }
+        }
+    }
+
+    string outString = "output" + to_string(inInt) + ".bmp";
+    image.save_image(outString);
 }

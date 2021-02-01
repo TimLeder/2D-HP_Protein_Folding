@@ -9,12 +9,17 @@
 #include <random>
 #include <algorithm>
 #include <iomanip>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include "bitmap_image.hpp"
 #include <iterator>
 #include <fstream>
 
 #ifndef GA_FOLDING_SOLUTION_H
 #define GA_FOLDING_SOLUTION_H
-#define gridType std::array<std::array<polarityStatus, 28>, 28>
+#define gridType std::array<std::array<polarityStatus, 32>, 32>
+#define indexGridType std::array<std::array<int, 32>, 32>
 
 using namespace std;
 
@@ -33,6 +38,7 @@ public:
 
     float computeFitness();
     void printSolution();
+    void renderSolution(int);
     int getOverlap();
     void mutateSolution(float mutF);
     void cross(Solution, int);

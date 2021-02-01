@@ -5,6 +5,7 @@ const int MAXGENERATIONS = 100;
 const float MUTATION_FACTOR = 0.01;
 const float CROSSOVER_RATE = 0.1;
 const int POPULATION_SIZE = 100;
+const string INPUT_STRING = "11010101011110100010001000010001000101111010101011";
 
 //float computeFitness(gridType grid, int chainLength);
 
@@ -18,10 +19,9 @@ int main() {
         return 0;
     }
     Solution bestCandidate;
-    Population p = Population(POPULATION_SIZE);
+    Population p = Population(POPULATION_SIZE, INPUT_STRING);
     p.computePopFitness();
     for(int i = 0; i < MAXGENERATIONS; i++) {
-        cout << endl << "GENERATION " << i << endl;
         //CSV: Generationsnummer
         csv << i << ";";
         //CSV: Durchschnittliche Fitness
@@ -36,9 +36,10 @@ int main() {
         csv << bestCandidate.getOverlap() << "\n";
         //Selektieren
         p = p.fpSelect();
-        //p = p.tournamentSelect();
+        //p = p.tournamentSelectF(0.75);
         p.computePopFitness();
-        p.printBestSolution();
+        //p.printBestSolution();
+        p.drawBestSolution(i);
         //Crossover
         p.crossoverPop(CROSSOVER_RATE);
         //Mutieren

@@ -10,12 +10,14 @@
 
 class Population {
 public:
-    explicit Population(int);
+    explicit Population(int, string);
 
     float computePopFitness();
     Population fpSelect();
-    Population tournamentSelect();
+    Population tournamentSelectI(int k);
+    Population tournamentSelectF(float t);
     void printBestSolution();
+    void drawBestSolution(int);
     float averageFitness();
     Solution bestSolution();
     void mutatePop(float mutF);
